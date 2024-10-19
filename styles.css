@@ -1,0 +1,118 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+h2 {
+    color: #34495e;
+    margin-top: 0;
+}
+
+.character-creation, .characters, .battle {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+.character-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.character-card {
+    background-color: white;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    padding: 10px;
+    width: 180px;
+    position: relative;
+}
+
+.remove-card {
+    position: absolute;
+    top: 0;
+    right: 6px;
+    cursor: pointer;
+}
+
+h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.card-prop {
+    margin: 5px 0;
+    font-size: 14px;
+    color: brown;
+    font-weight: 600;
+}
+
+.battle-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.battle-log {
+    background-color: #ecf0f1;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.battle-log p {
+    margin: 5px 0;
+    font-size: 14px;
+}

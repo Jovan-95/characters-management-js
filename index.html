@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Management Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Character Management Game</h1>
+
+    <div class="character-creation">
+        <h2>Create a Character</h2>
+        <form id="character-form">
+            <label for="name">Character Name:</label>
+            <input type="text" id="name" placeholder="Enter name" required>
+
+            <label for="type">Character Type:</label>
+            <select id="type">
+                <option value="warrior">Warrior</option>
+                <option value="mage">Mage</option>
+                <option value="archer">Archer</option>
+            </select>
+
+            <button id="createBtn" type="submit">Create Character</button>
+        </form>
+    </div>
+
+    <div class="characters">
+        <h2>Characters</h2>
+        <div id="character-list" class="character-list">
+            <!-- Created characters will be displayed here -->
+        </div>
+    </div>
+
+    <div class="battle">
+        <h2>Battle</h2>
+        <div class="battle-controls">
+            <button id="start-battle">Start Battle</button>
+            <button id="reset-battle">Reset Battle</button>
+        </div>
+        <div id="battle-log" class="battle-log">
+            <!-- Battle log messages will be displayed here -->
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
