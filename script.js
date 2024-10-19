@@ -168,3 +168,4 @@ function createCharacter(event) {
 }
 createBtn.addEventListener('click', createCharacter)
 
+git remote add origin https://github.com/Jovan-95/characters-management-js.git
