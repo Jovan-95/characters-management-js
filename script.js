@@ -5,6 +5,15 @@ const charList = document.querySelector('#character-list');
 const startBattle = document.querySelector('#start-battle');
 const resetBattle = document.querySelector('#reset-battle');
 const battleLog = document.querySelector('#battle-log');
+const turnsBtn = document.querySelector('.turns-btn');
+const turnP1 = document.querySelector('#turnP1');
+const turnP2 = document.querySelector('#turnP2');
+const charCreationContainer = document.querySelector('.character-creation');
+const innerBars = document.querySelectorAll('.inner-bar');
+// const charactersContainer = document.querySelector('.character-creation');
+
+
+
 
 // OOP logic
 class Character {
@@ -35,17 +44,18 @@ class Warrior extends Character {
         this.strength = 25;
         this.defence = 15;
         this.attackSpeed = 2000;
+        this.heroClassName = 'Warrior';
     }
 
     specialAttack(target) {
-        let interval = setInterval(() => {
+        let interval = setTimeout(() => {
             this.attack(target);
+            console.log('Special attack on', target.name, 'Health left', target.health);
+            battleLog.innerHTML += `<div>Special attack on ${target.name}, Health left ${target.health}. ${target.name} has the turn</div>`;
 
-            console.log('special attack!');
-            console.log('Target', target);
             if (target.health <= 0) {
-                console.log('Target destroyed!!!')
-                clearInterval(interval)
+                battleLog.innerHTML = `${target.name} destroyed!!!`
+                console.log(target.name ,'destroyed!!!')
             }
         }, this.attackSpeed);
     }
@@ -61,16 +71,17 @@ class Mage extends Character {
         this.strength = 20;
         this.defence = 10;
         this.attackSpeed = 1700;
+        this.heroClassName = 'Mage';
     }
 
     castSpell(target) {
-        let interval = setInterval(() => {
+        let interval = setTimeout(() => {
             this.attack(target);
-            console.log('spell casted!');
-            console.log('Target', target);
+            console.log('Spell casted on', target.name, 'Health left', target.health);
+            battleLog.innerHTML += `<div>Spell casted on ${target.name}, Health left ${target.health}. ${target.name} has the turn</div>`
             if (target.health <= 0) {
                 console.log('Target destroyed!!!')
-                clearInterval(interval)
+                battleLog.innerHTML = `${target.name} is destroyed!!!`
             }
         }, this.attackSpeed);
     }
@@ -84,43 +95,55 @@ class Archer extends Character {
         this.strength = 16;
         this.defence = 12;
         this.attackSpeed = 1500;
+        this.heroClassName = 'Archer';
     }
 
     shootArrow(target) {
-        let interval = setInterval(() => {
+        let interval = setTimeout(() => {
             this.attack(target);
-            console.log('shot arrow!');
-            console.log('Target', target);
+            console.log('Arrow shot on', target.name, 'Health left', target.health);
+            battleLog.innerHTML += `<div>Arrow shot on ${target.name}, Health left ${target.health}. ${target.name} has the turn</div>`
             if (target.health <= 0) {
                 console.log('Target destroyed!!!')
-                clearInterval(interval)
+                battleLog.innerHTML = `${target.name} is destroyed!!!`
             }
         }, this.attackSpeed);
     }
 }
 
-
-///////////////////// temporary
-// console.log('----------- attacks testing OOP logic -----------')
-
-// const jovan = new Warrior('Jovan');
-// const boris = new Mage('Boris');
-// const tomica = new Archer('Tomica');
-
-// console.log(jovan);
-// console.log(boris);
-// console.log(tomica)
-
-// jovan.specialAttack(boris);
-
-
 console.log('----------- DOM -----------')
 //////////// DOM
+let players = [];
 function createCharacter(event) {
     // Stopping the submission
     event.preventDefault();
 
     let character;
+
+    if (select.value === 'warrior') {
+        character = new Warrior(charNameInput.value);
+        if (players.length < 2) {
+            players.push(character)
+            cardCreation();
+        }
+        // console.log(players)
+
+    } else if (select.value === 'mage') {
+        character = new Mage(charNameInput.value);
+        if (players.length < 2) {
+            players.push(character)
+            cardCreation();
+        }
+        // console.log(players)
+
+    } else if (select.value === 'archer') {
+        character = new Archer(charNameInput.value);
+        if (players.length < 2) {
+            players.push(character)
+            cardCreation();
+        }
+        // console.log(players)
+    }
 
     // Card creation for all classes
     function cardCreation() {
@@ -129,13 +152,29 @@ function createCharacter(event) {
         card.classList.add('character-card');
         charList.appendChild(card);
 
+        let img = document.createElement('img');
+        if (character.heroClassName === 'Warrior') {
+            img.src = 'img/warrior.png';
+        } else if (character.heroClassName === 'Mage') {
+            img.src = 'img/mage.png';
+        } else if (character.heroClassName === 'Archer') {
+            img.src = 'img/archer.png';
+        }
+
+        img.classList.add('added-img');
+        card.appendChild(img)
+
         let cardName = document.createElement('h3');
+        cardName.style.padding = '10px'
         card.appendChild(cardName)
         cardName.innerHTML = `${character.name}`;
 
         let cardProps = document.createElement('div');
+        cardProps.style.padding = '10px'
         card.appendChild(cardProps)
-        cardProps.innerHTML = `<div class="card-prop">Health: ${character.health}</div>
+        cardProps.innerHTML = `
+                               <div class="card-prop class-name">Class: ${character.heroClassName}</div>
+                               <div class="card-prop">Health: ${character.health}</div>
                                <div class="card-prop">Strength: ${character.strength}</div>
                                <div class="card-prop">Defence: ${character.defence}</div>
                                <div class="card-prop">Speed: ${character.attackSpeed}</div>
@@ -150,22 +189,72 @@ function createCharacter(event) {
 
     }
 
-    if (select.value === 'warrior') {
-        character = new Warrior(charNameInput.value);
-        console.log(character)
-        cardCreation();
+    charNameInput.value = '';
+}
 
-    } else if (select.value === 'mage') {
-        character = new Mage(charNameInput.value);
-        console.log(character);
-        cardCreation();
-    } else if (select.value === 'archer') {
-        character = new Archer(charNameInput.value);
-        console.log(character)
-        cardCreation();
+createBtn.addEventListener('click', createCharacter);
+
+
+
+function start() {
+    if (players.length === 2) {
+        charCreationContainer.classList.add('d-none')
+
+        battleLog.innerHTML = ``;
+        turnsBtn.classList.remove('d-none');
+
+        let player1 = players[0];
+        let player2 = players[1];
+        console.log('PLAYER1', player1)
+        console.log('PLAYER2', player2)
+
+
+        turnP1.addEventListener('click', turn1Att);
+        turnP2.addEventListener('click', turn2Att);
+
+    } else {
+        battleLog.innerHTML = `Players need to create characters!`
     }
 
 }
-createBtn.addEventListener('click', createCharacter)
+startBattle.addEventListener('click', start)
 
-git remote add origin https://github.com/Jovan-95/characters-management-js.git
+function turn1Att() {
+    turnP2.disabled = false;
+    turnP2.classList.remove('disabled')
+
+    let player1 = players[0];
+    let player2 = players[1];
+
+    if (player1.heroClassName === 'Warrior') {
+        player1.specialAttack(player2)
+    } else if (player1.heroClassName === 'Mage') {
+        player1.castSpell(player2)
+    } else if (player1.heroClassName === 'Archer') {
+        player1.shootArrow(player2)
+    }
+
+
+turnP1.disabled = true;
+turnP1.classList.add('disabled')
+
+}
+
+function turn2Att() {
+    turnP1.disabled = false;
+    turnP1.classList.remove('disabled')
+
+    let player1 = players[0];
+    let player2 = players[1];
+
+    if (player2.heroClassName === 'Warrior') {
+        player2.specialAttack(player1)
+    } else if (player2.heroClassName === 'Mage') {
+        player2.castSpell(player1)
+    } else if (player2.heroClassName === 'Archer') {
+        player2.shootArrow(player1)
+    }
+
+    turnP2.disabled = true;
+    turnP2.classList.add('disabled')
+}

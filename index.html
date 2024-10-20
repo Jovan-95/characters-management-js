@@ -29,6 +29,10 @@
 
     <div class="characters">
         <h2>Characters</h2>
+        <div class="players mb-8">
+            <div class="player">Player 1:</div>
+            <div class="player p-two">Player 2:</div>
+        </div>
         <div id="character-list" class="character-list">
             <!-- Created characters will be displayed here -->
         </div>
@@ -40,6 +44,22 @@
             <button id="start-battle">Start Battle</button>
             <button id="reset-battle">Reset Battle</button>
         </div>
+
+        <div class="turns-btn d-none">
+            <div >
+                <button id="turnP1">Attack P1</button>
+                <div class="bar mt-8" id="healthBarP1">
+                    <div class="inner-bar" id="healthP1"></div>
+                </div>
+            </div>
+            <div >
+                <button class="disabled" disabled id="turnP2">Attack P2</button>
+                <div class="bar mt-8" id="healthBarP2">
+                    <div class="inner-bar" id="healthP2"></div>
+                </div>
+            </div>
+        </div>
+
         <div id="battle-log" class="battle-log">
             <!-- Battle log messages will be displayed here -->
         </div>
