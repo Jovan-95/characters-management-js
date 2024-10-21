@@ -48,7 +48,7 @@ input, select {
     border: 1px solid #ccc;
 }
 
-button {
+.start-button {
     padding: 10px 15px;
     background-color: #3498db;
     color: #fff;
@@ -58,7 +58,7 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+.start-button:hover {
     background-color: #2980b9;
 }
 
@@ -78,6 +78,7 @@ button:hover {
     cursor: pointer;
     transition: 0.4s;
 }
+
 .character-card:hover {
     transform: scale(1.04);
 }
@@ -165,24 +166,48 @@ h3 {
 }
 
 .disabled {
-    background: gray;
+    background: gray !important;
     cursor: none;
 }
+
 .disabled:hover {
     background: gray;
 }
 
 .bar {
-    /*width: 100%;*/
+    width: 150px;
     background-color: grey;
 }
 
 .inner-bar {
-    /*width: 1%;*/
     height: 30px;
     background-color: green;
 }
 
 .mt-8 {
     margin-top: 8px;
+}
+
+.msg {
+    color: #3498db;
+    font-weight: bold;
+}
+
+.att-btn {
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    width: 100px;
+    height: 100px;
+    background: red;
+    border-radius: 100%;
+    color: white;
+    font-weight: 700;
+    font-size: large;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+}
+.att-btn:hover {
+    transform: scale(1.02);
 }

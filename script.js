@@ -9,11 +9,16 @@ const turnsBtn = document.querySelector('.turns-btn');
 const turnP1 = document.querySelector('#turnP1');
 const turnP2 = document.querySelector('#turnP2');
 const charCreationContainer = document.querySelector('.character-creation');
-const innerBars = document.querySelectorAll('.inner-bar');
+
 // const charactersContainer = document.querySelector('.character-creation');
 
+const health1 = document.querySelector('#healthP1');
+const health2 = document.querySelector('#healthP2');
 
-
+const p1Att1 = document.querySelector('.p1-attack-1')
+const p1Att2 = document.querySelector('.p1-attack-2')
+const p2Att1 = document.querySelector('.p2-attack-1')
+const p2Att2 = document.querySelector('.p2-attack-2')
 
 // OOP logic
 class Character {
@@ -25,13 +30,29 @@ class Character {
     }
 
     attack(target) {
+
         if (target.health > 0) {
             target.takeDamage(this.strength - target.defence)
         }
     }
 
     takeDamage(amount) {
-        this.health = this.health - amount;
+        this.health = Math.max(0, this.health - amount);
+
+        // updating health bars
+        if (this === players[0]) {
+            health1.style.width = `${this.health}%`;
+        } else {
+            health2.style.width = `${this.health}%`;
+        }
+        if (players[0].health <= 0 || players[1].health <= 0) {
+            turnP1.disabled = true;
+            turnP2.disabled = true;
+            turnP1.classList.add('disabled');
+            turnP2.classList.add('disabled');
+
+        }
+
     }
 }
 
@@ -40,7 +61,7 @@ class Warrior extends Character {
     constructor(name) {
         super(name);
         this.name = name;
-        this.health = 120;
+        this.health = 100;
         this.strength = 25;
         this.defence = 15;
         this.attackSpeed = 2000;
@@ -48,16 +69,29 @@ class Warrior extends Character {
     }
 
     specialAttack(target) {
-        let interval = setTimeout(() => {
+        let timeout = setTimeout(() => {
             this.attack(target);
             console.log('Special attack on', target.name, 'Health left', target.health);
             battleLog.innerHTML += `<div>Special attack on ${target.name}, Health left ${target.health}. ${target.name} has the turn</div>`;
 
             if (target.health <= 0) {
-                battleLog.innerHTML = `${target.name} destroyed!!!`
-                console.log(target.name ,'destroyed!!!')
+                battleLog.innerHTML = `<div class="">${target.name} destroyed!!!<div>`
+
+                console.log(target.name, 'destroyed!!!');
             }
         }, this.attackSpeed);
+    }
+
+    swordThrow(target) {
+        this.attack(target);
+        // Second attack logic
+
+
+        if (target.health <= 0) {
+            battleLog.innerHTML = `<div class="">${target.name} destroyed!!!<div>`
+
+            console.log(target.name, 'destroyed!!!');
+        }
     }
 
 }
@@ -68,22 +102,32 @@ class Mage extends Character {
     constructor(name) {
         super(name);
         this.health = 80;
-        this.strength = 20;
+        this.strength = 35;
         this.defence = 10;
         this.attackSpeed = 1700;
         this.heroClassName = 'Mage';
     }
 
     castSpell(target) {
-        let interval = setTimeout(() => {
+        let timeout = setTimeout(() => {
             this.attack(target);
             console.log('Spell casted on', target.name, 'Health left', target.health);
             battleLog.innerHTML += `<div>Spell casted on ${target.name}, Health left ${target.health}. ${target.name} has the turn</div>`
             if (target.health <= 0) {
                 console.log('Target destroyed!!!')
-                battleLog.innerHTML = `${target.name} is destroyed!!!`
+                battleLog.innerHTML = `<div class="">${target.name} destroyed!!!<div>`
             }
         }, this.attackSpeed);
+    }
+
+    fireBall(target) {
+        this.attack(target);
+        // Second attack logic
+
+        if (target.health <= 0) {
+            console.log('Target destroyed!!!')
+            battleLog.innerHTML = `<div class="">${target.name} destroyed!!!<div>`
+        }
     }
 }
 
@@ -92,28 +136,39 @@ class Archer extends Character {
     constructor(name) {
         super(name)
         this.health = 90;
-        this.strength = 16;
+        this.strength = 30;
         this.defence = 12;
         this.attackSpeed = 1500;
         this.heroClassName = 'Archer';
     }
 
     shootArrow(target) {
-        let interval = setTimeout(() => {
+        let timeout = setTimeout(() => {
             this.attack(target);
             console.log('Arrow shot on', target.name, 'Health left', target.health);
             battleLog.innerHTML += `<div>Arrow shot on ${target.name}, Health left ${target.health}. ${target.name} has the turn</div>`
             if (target.health <= 0) {
                 console.log('Target destroyed!!!')
-                battleLog.innerHTML = `${target.name} is destroyed!!!`
+                battleLog.innerHTML = `<div class="">${target.name} destroyed!!!<div>`
             }
         }, this.attackSpeed);
+    }
+
+    fireArrow(target) {
+        this.attack(target);
+        // second attack logic
+
+        if (target.health <= 0) {
+            console.log('Target destroyed!!!')
+            battleLog.innerHTML = `<div class="">${target.name} destroyed!!!<div>`
+        }
     }
 }
 
 console.log('----------- DOM -----------')
 //////////// DOM
 let players = [];
+
 function createCharacter(event) {
     // Stopping the submission
     event.preventDefault();
@@ -195,7 +250,6 @@ function createCharacter(event) {
 createBtn.addEventListener('click', createCharacter);
 
 
-
 function start() {
     if (players.length === 2) {
         charCreationContainer.classList.add('d-none')
@@ -205,6 +259,8 @@ function start() {
 
         let player1 = players[0];
         let player2 = players[1];
+
+
         console.log('PLAYER1', player1)
         console.log('PLAYER2', player2)
 
@@ -212,49 +268,182 @@ function start() {
         turnP1.addEventListener('click', turn1Att);
         turnP2.addEventListener('click', turn2Att);
 
+        health1.style.width = `${player1.health}%`;
+        health2.style.width = `${player2.health}%`;
+
     } else {
         battleLog.innerHTML = `Players need to create characters!`
     }
 
+
 }
+
 startBattle.addEventListener('click', start)
 
 function turn1Att() {
-    turnP2.disabled = false;
-    turnP2.classList.remove('disabled')
-
     let player1 = players[0];
     let player2 = players[1];
 
+
+    p1Att1.classList.remove('d-none');
+    p1Att2.classList.remove('d-none');
+
+
     if (player1.heroClassName === 'Warrior') {
-        player1.specialAttack(player2)
+        p1Att1.innerHTML = `SPECIAL ATTACK!`;
+        p1Att2.innerHTML = `SWORD THROW!`;
+
+        p1Att1.addEventListener('click', function () {
+            player1.specialAttack(player2);
+
+            turnP2.disabled = false;
+            turnP2.classList.remove('disabled');
+
+            p1Att1.disabled = true;
+            p1Att2.disabled = true;
+            p1Att1.classList.add('disabled');
+            p1Att2.classList.add('disabled');
+
+            p2Att1.disabled = false;
+            p2Att2.disabled = false;
+            p2Att1.classList.remove('disabled');
+            p2Att2.classList.remove('disabled');
+
+        })
+
     } else if (player1.heroClassName === 'Mage') {
-        player1.castSpell(player2)
+        p1Att1.innerHTML = `CAST SPELL!`;
+        p1Att2.innerHTML = `FIREBALL!`;
+
+        p1Att1.addEventListener('click', function () {
+            player1.castSpell(player2);
+
+            turnP2.disabled = false;
+            turnP2.classList.remove('disabled');
+
+            p1Att1.disabled = true;
+            p1Att2.disabled = true;
+            p1Att1.classList.add('disabled');
+            p1Att2.classList.add('disabled');
+
+            p2Att1.disabled = false;
+            p2Att2.disabled = false;
+            p2Att1.classList.remove('disabled');
+            p2Att2.classList.remove('disabled');
+        })
+
     } else if (player1.heroClassName === 'Archer') {
-        player1.shootArrow(player2)
+        p1Att1.innerHTML = `SHOOT ARROW!`;
+        p1Att2.innerHTML = `FIRE ARROW!`;
+
+        p1Att1.addEventListener('click', function () {
+            player1.shootArrow(player2);
+
+            turnP2.disabled = false;
+            turnP2.classList.remove('disabled');
+
+            p1Att1.disabled = true;
+            p1Att2.disabled = true;
+            p1Att1.classList.add('disabled');
+            p1Att2.classList.add('disabled');
+
+            p2Att1.disabled = false;
+            p2Att2.disabled = false;
+            p2Att1.classList.remove('disabled');
+            p2Att2.classList.remove('disabled');
+        })
     }
 
 
-turnP1.disabled = true;
-turnP1.classList.add('disabled')
+    turnP1.disabled = true;
+    turnP1.classList.add('disabled');
+
 
 }
 
 function turn2Att() {
-    turnP1.disabled = false;
-    turnP1.classList.remove('disabled')
-
     let player1 = players[0];
     let player2 = players[1];
 
+    p2Att1.classList.remove('d-none')
+    p2Att2.classList.remove('d-none')
+
+
     if (player2.heroClassName === 'Warrior') {
-        player2.specialAttack(player1)
+        p2Att1.innerHTML = `SPECIAL ATTACK!`;
+        p2Att2.innerHTML = `SWORD THROW!`;
+
+        p2Att1.addEventListener('click', function () {
+            player2.specialAttack(player1);
+
+            // turnP1.disabled = false;
+            // turnP1.classList.remove('disabled');
+
+            p1Att1.disabled = false;
+            p1Att2.disabled = false;
+            p1Att1.classList.remove('disabled');
+            p1Att2.classList.remove('disabled');
+
+            p2Att1.disabled = true;
+            p2Att2.disabled = true;
+            p2Att1.classList.add('disabled');
+            p2Att2.classList.add('disabled');
+        })
+
     } else if (player2.heroClassName === 'Mage') {
-        player2.castSpell(player1)
+
+        p2Att1.innerHTML = `CAST SPELL!`;
+        p2Att2.innerHTML = `FIREBALL!`;
+
+        p2Att1.addEventListener('click', function () {
+            player2.castSpell(player1);
+
+            // turnP1.disabled = false;
+            // turnP1.classList.remove('disabled');
+
+            p1Att1.disabled = false;
+            p1Att2.disabled = false;
+            p1Att1.classList.remove('disabled');
+            p1Att2.classList.remove('disabled');
+
+            p2Att1.disabled = true;
+            p2Att2.disabled = true;
+            p2Att1.classList.add('disabled');
+            p2Att2.classList.add('disabled');
+        })
+
     } else if (player2.heroClassName === 'Archer') {
-        player2.shootArrow(player1)
+
+        p2Att1.innerHTML = `SHOOT ARROW!`;
+        p2Att2.innerHTML = `FIRE ARROW!`;
+
+        p2Att1.addEventListener('click', function () {
+            player2.shootArrow(player1);
+
+            // turnP1.disabled = false;
+            // turnP1.classList.remove('disabled');
+
+            p1Att1.disabled = false;
+            p1Att2.disabled = false;
+            p1Att1.classList.remove('disabled');
+            p1Att2.classList.remove('disabled');
+
+            p2Att1.disabled = true;
+            p2Att2.disabled = true;
+            p2Att1.classList.add('disabled');
+            p2Att2.classList.add('disabled');
+        })
     }
 
     turnP2.disabled = true;
-    turnP2.classList.add('disabled')
+    turnP2.classList.add('disabled');
+
 }
+
+
+// Create second attack for every class
+// Try to shorten the code inside the attack btn functions
+// Add timers to turns
+// Create and fix info messages, battle log exc..
+// Fix CSS
+
