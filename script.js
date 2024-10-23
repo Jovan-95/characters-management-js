@@ -46,6 +46,10 @@ class Character {
         } else {
             health2.style.width = `${this.health}%`;
         }
+        if (players[0].health <= 0 || players[1].health <= 0) {
+            clearInterval(toggleFunction)
+            endGameDisableOptions();
+        }
 
     }
 }
@@ -255,6 +259,8 @@ createBtn.addEventListener('click', createCharacter);
 
 let activeFunction = 1;
 let countdown = 5;
+let intervalId;
+
 function start() {
     if (players.length === 2) {
         timerElement.classList.remove('d-none')
@@ -274,35 +280,19 @@ function start() {
         // turnP2.addEventListener('click', turn2Att);
 
         // Testing auto battle with timer
-        function toggleFunction() {
-            if (activeFunction === 1) {
-                turn1Att();
-                activeFunction = 2;
-                if (players[0].health <= 0 || players[1].health <= 0) {
-                    clearInterval(toggleFunction)
-                    endGameDisableOptions();
-                }
-            } else {
-                turn2Att();
-                activeFunction = 1;
-                if (players[0].health <= 0 || players[1].health <= 0) {
-                    clearInterval(toggleFunction)
-                    endGameDisableOptions();
-                }
-            }
-        }
+        toggleFunction();
 
-        function startTimer() {
-            let interval = setInterval(() => {
-                countdown--;
-                timerElement.innerText = countdown;
-                if (countdown === 0) {
-                    toggleFunction();
-                    countdown = 5;
-                }
-            }, 3000)
-        }
-        startTimer()
+        // timer
+        let tim = setInterval(() => {
+            startTimer();
+            countdown--;
+            timerElement.textContent = `Next turn in: ${countdown}s`;
+            if (countdown <= 0) {
+                clearInterval(intervalId);
+                toggleFunction();  // Switch turns after countdown
+            }
+        }, 5000);
+
 
         health1.style.width = `${player1.health}%`;
         health2.style.width = `${player2.health}%`;
@@ -322,6 +312,8 @@ function turn1Att() {
 
     p1Att1.classList.remove('d-none');
     p1Att2.classList.remove('d-none');
+    // p2Att1.classList.remove('d-none');
+    // p2Att2.classList.remove('d-none');
 
     regulateDisablingOptionsP2();
 
@@ -333,7 +325,7 @@ function turn1Att() {
         p1Att1.addEventListener('click', function () {
             player1.specialAttack(player2);
             regulateDisablingOptionsP1();
-
+            startTimer()
         });
 
     } else if (player1.heroClassName === 'Mage') {
@@ -342,8 +334,9 @@ function turn1Att() {
 
         p1Att1.addEventListener('click', function () {
             player1.castSpell(player2);
-
             regulateDisablingOptionsP1();
+            startTimer()
+
         })
 
     } else if (player1.heroClassName === 'Archer') {
@@ -352,8 +345,9 @@ function turn1Att() {
 
         p1Att1.addEventListener('click', function () {
             player1.shootArrow(player2);
-
             regulateDisablingOptionsP1();
+            startTimer()
+
         })
     }
 
@@ -379,6 +373,7 @@ function turn2Att() {
         p2Att1.addEventListener('click', function () {
             player2.specialAttack(player1);
             regulateDisablingOptionsP2();
+            startTimer()
         });
 
     } else if (player2.heroClassName === 'Mage') {
@@ -388,8 +383,9 @@ function turn2Att() {
 
         p2Att1.addEventListener('click', function () {
             player2.castSpell(player1);
-
             regulateDisablingOptionsP2();
+            startTimer()
+
         })
 
     } else if (player2.heroClassName === 'Archer') {
@@ -399,9 +395,9 @@ function turn2Att() {
 
         p2Att1.addEventListener('click', function () {
             player2.shootArrow(player1);
-
-
             regulateDisablingOptionsP2();
+            startTimer()
+
         })
     }
 
@@ -451,8 +447,33 @@ function endGameDisableOptions() {
     p2Att2.classList.add('disabled');
 }
 
+// auto battle and timer
+function toggleFunction() {
+    if (activeFunction === 1) {
+        turn1Att();
+        activeFunction = 2;
+    } else {
+        turn2Att();
+        activeFunction = 1;
+    }
+}
+
+function startTimer() {
+    clearInterval(intervalId);  // Clear any existing timers
+    countdown = 5;
+    timerElement.textContent = `Next turn in: ${countdown}s`;
+
+    intervalId = setInterval(() => {
+        countdown--;
+        timerElement.textContent = `Next turn in: ${countdown}s`;
+
+        if (countdown <= 0) {
+            clearInterval(intervalId);
+            toggleFunction();  // Switch turns after countdown
+        }
+    }, 1000);
+}
+
 //////
-// Fix timers when player attacks
-// Create and fix info messages, battle log exc..
 // Fix CSS
 // add second attack
