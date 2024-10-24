@@ -276,9 +276,6 @@ function start() {
         console.log('PLAYER2', player2)
 
 
-        // turnP1.addEventListener('click', turn1Att);
-        // turnP2.addEventListener('click', turn2Att);
-
         // Testing auto battle with timer
         toggleFunction();
 
@@ -298,7 +295,7 @@ function start() {
         health2.style.width = `${player2.health}%`;
 
     } else {
-        battleLog.innerHTML = `Players need to create characters!`
+        battleLog.innerHTML = `<div class="bl-text">Players need to create characters!</div>`
     }
 }
 
@@ -312,8 +309,9 @@ function turn1Att() {
 
     p1Att1.classList.remove('d-none');
     p1Att2.classList.remove('d-none');
-    // p2Att1.classList.remove('d-none');
-    // p2Att2.classList.remove('d-none');
+
+    p2Att1.classList.remove('d-none')
+    p2Att2.classList.remove('d-none')
 
     regulateDisablingOptionsP2();
 
@@ -330,7 +328,7 @@ function turn1Att() {
 
     } else if (player1.heroClassName === 'Mage') {
         p1Att1.innerHTML = `CAST SPELL!`;
-        p1Att2.innerHTML = `FIREBALL!`;
+        p1Att2.innerHTML = `FIRE BALL!`;
 
         p1Att1.addEventListener('click', function () {
             player1.castSpell(player2);
@@ -360,8 +358,11 @@ function turn2Att() {
     let player1 = players[0];
     let player2 = players[1];
 
-    p2Att1.classList.remove('d-none')
-    p2Att2.classList.remove('d-none')
+    // p1Att1.classList.remove('d-none');
+    // p1Att2.classList.remove('d-none');
+    //
+    // p2Att1.classList.remove('d-none')
+    // p2Att2.classList.remove('d-none')
 
     regulateDisablingOptionsP1();
 
@@ -379,7 +380,7 @@ function turn2Att() {
     } else if (player2.heroClassName === 'Mage') {
 
         p2Att1.innerHTML = `CAST SPELL!`;
-        p2Att2.innerHTML = `FIREBALL!`;
+        p2Att2.innerHTML = `FIRE BALL!`;
 
         p2Att1.addEventListener('click', function () {
             player2.castSpell(player1);
@@ -449,16 +450,18 @@ function endGameDisableOptions() {
 
 // auto battle and timer
 function toggleFunction() {
-    if (activeFunction === 1) {
+    if (activeFunction === 1 && players[0].health > 0) {
         turn1Att();
         activeFunction = 2;
-    } else {
+    } else if (activeFunction === 2 && players[1].health > 0) {
         turn2Att();
         activeFunction = 1;
     }
+
 }
 
 function startTimer() {
+
     clearInterval(intervalId);  // Clear any existing timers
     countdown = 5;
     timerElement.textContent = `Next turn in: ${countdown}s`;
@@ -470,10 +473,43 @@ function startTimer() {
         if (countdown <= 0) {
             clearInterval(intervalId);
             toggleFunction();  // Switch turns after countdown
+
         }
+
     }, 1000);
 }
 
 //////
 // Fix CSS
 // add second attack
+
+// reset
+function reset() {
+    // Reset players' health and character list
+    players = [];
+    health1.style.width = '100%';
+    health2.style.width = '100%';
+
+    // Clear battle log and other UI elements
+    battleLog.innerHTML = '';
+    charList.innerHTML = '';
+
+
+    p1Att1.classList.add('d-none');
+    p1Att2.classList.add('d-none');
+    p2Att1.classList.add('d-none');
+    p2Att2.classList.add('d-none');
+
+    charCreationContainer.classList.remove('d-none'); // Show character creation again
+    turnsBtn.classList.add('d-none');
+    timerElement.classList.add('d-none');
+    timerElement.textContent = '';
+
+    // Reset any function intervals if necessary
+    clearInterval(intervalId);
+    countdown = 5;
+
+
+    battleLog.innerHTML = `<div class="bl-text">Battle has been reset. Create new characters!</div>`;
+}
+resetBattle.addEventListener('click', reset)

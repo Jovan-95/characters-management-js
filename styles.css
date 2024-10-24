@@ -69,18 +69,18 @@ input, select {
 }
 
 .character-card {
-    background-color: #aeaeec;
+    background-color: red;
     /*border: 1px solid #bdc3c7;*/
     border-radius: 5px;
     /*padding: 10px;*/
     width: 180px;
     position: relative;
     cursor: pointer;
-    transition: 0.4s;
+    transition: 0.8s;
 }
 
 .character-card:hover {
-    transform: scale(1.04);
+    transform: rotateY(360deg);
 }
 
 .added-img {
