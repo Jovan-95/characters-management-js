@@ -6,10 +6,7 @@ const startBattle = document.querySelector('#start-battle');
 const resetBattle = document.querySelector('#reset-battle');
 const battleLog = document.querySelector('#battle-log');
 const turnsBtn = document.querySelector('.turns-btn');
-// const turnP1 = document.querySelector('#turnP1');
-// const turnP2 = document.querySelector('#turnP2');
 const charCreationContainer = document.querySelector('.character-creation');
-// const charactersContainer = document.querySelector('.character-creation');
 const functionStatus = document.getElementById("function-status")
 const timerElement = document.getElementById("timer");
 
@@ -28,14 +25,22 @@ class Character {
         this.health = 100;
         this.strength = strength;
         this.defence = defence;
+        this.isBlocking = false;
     }
 
     attack(target) {
-
         if (target.health > 0) {
             target.takeDamage(this.strength - target.defence)
         }
+
     }
+    // FIX THIS
+    // blocking() {
+    //     if (this.isBlocking === false) {
+    //         this.isBlocking = true;
+    //     }
+    //     battleLog.innerHTML += `<div class="bl-text">${this.name} is blocking the next attack!</div>`;
+    // }
 
     takeDamage(amount) {
         this.health = Math.max(0, this.health - amount);
@@ -318,7 +323,7 @@ function turn1Att() {
 
     if (player1.heroClassName === 'Warrior') {
         p1Att1.innerHTML = `SPECIAL ATTACK!`;
-        p1Att2.innerHTML = `SWORD THROW!`;
+        p1Att2.innerHTML = `BLOCK!`;
 
         p1Att1.addEventListener('click', function () {
             player1.specialAttack(player2);
@@ -326,9 +331,16 @@ function turn1Att() {
             startTimer()
         });
 
+        p1Att2.addEventListener('click', function () {
+            // uncomment after fixing the function
+            // player1.blocking();
+            regulateDisablingOptionsP1();
+            startTimer()
+        })
+
     } else if (player1.heroClassName === 'Mage') {
         p1Att1.innerHTML = `CAST SPELL!`;
-        p1Att2.innerHTML = `FIRE BALL!`;
+        p1Att2.innerHTML = `BLOCK!`;
 
         p1Att1.addEventListener('click', function () {
             player1.castSpell(player2);
@@ -339,7 +351,7 @@ function turn1Att() {
 
     } else if (player1.heroClassName === 'Archer') {
         p1Att1.innerHTML = `SHOOT ARROW!`;
-        p1Att2.innerHTML = `FIRE ARROW!`;
+        p1Att2.innerHTML = `BLOCK!`;
 
         p1Att1.addEventListener('click', function () {
             player1.shootArrow(player2);
@@ -369,7 +381,7 @@ function turn2Att() {
 
     if (player2.heroClassName === 'Warrior') {
         p2Att1.innerHTML = `SPECIAL ATTACK!`;
-        p2Att2.innerHTML = `SWORD THROW!`;
+        p2Att2.innerHTML = `BLOCK!`;
 
         p2Att1.addEventListener('click', function () {
             player2.specialAttack(player1);
@@ -377,10 +389,17 @@ function turn2Att() {
             startTimer()
         });
 
+        p2Att2.addEventListener('click', function () {
+            // uncomment after fixing the function
+            // player2.blocking();
+            regulateDisablingOptionsP2();
+            startTimer()
+        })
+
     } else if (player2.heroClassName === 'Mage') {
 
         p2Att1.innerHTML = `CAST SPELL!`;
-        p2Att2.innerHTML = `FIRE BALL!`;
+        p2Att2.innerHTML = `BLOCK!`;
 
         p2Att1.addEventListener('click', function () {
             player2.castSpell(player1);
@@ -392,7 +411,7 @@ function turn2Att() {
     } else if (player2.heroClassName === 'Archer') {
 
         p2Att1.innerHTML = `SHOOT ARROW!`;
-        p2Att2.innerHTML = `FIRE ARROW!`;
+        p2Att2.innerHTML = `BLOCK!`;
 
         p2Att1.addEventListener('click', function () {
             player2.shootArrow(player1);
@@ -405,7 +424,6 @@ function turn2Att() {
     // turnP2.disabled = true;
     // turnP2.classList.add('disabled');
 }
-
 
 
 // Shortens the code inside the attack btn function
@@ -479,10 +497,6 @@ function startTimer() {
     }, 1000);
 }
 
-//////
-// Fix CSS
-// add second attack
-
 // reset
 function reset() {
     // Reset players' health and character list
@@ -512,4 +526,10 @@ function reset() {
 
     battleLog.innerHTML = `<div class="bl-text">Battle has been reset. Create new characters!</div>`;
 }
+
 resetBattle.addEventListener('click', reset)
+
+
+////// TODO
+// Fix Blocking
+// Fix CSS
